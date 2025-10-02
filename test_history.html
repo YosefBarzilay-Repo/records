@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>היסטוריית מבחנים</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <style>
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        .test-result-card {
+            background-color: var(--card-bg-light);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+        .dark .test-result-card {
+            background-color: var(--card-bg-dark);
+        }
+        .test-result-score {
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            width: 4rem;
+            text-align: center;
+        }
+        .test-result-details {
+            flex-grow: 1;
+        }
+        .test-result-level {
+            font-weight: 700;
+        }
+        .test-result-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary-light);
+        }
+        .dark .test-result-date {
+            color: var(--text-secondary-dark);
+        }
+        .test-result-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-action-placeholder"></div>
+                <h1 class="header-title">היסטוריית מבחנים</h1>
+                <div class="header-action-placeholder"></div>
+            </div>
+        </header>
+
+        <main>
+            <div class="content-wrapper space-y-4">
+                <a href="burn_depression_checklist.html" class="btn btn-primary btn-full">
+                    <span class="material-symbols-outlined">add</span>
+                    <span>מבחן חדש</span>
+                </a>
+                <div id="results-container" class="space-y-4">
+                    <!-- Test results will be injected here -->
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <nav class="footer-nav">
+                <a class="nav-link w-1/3" href="index.html" title="רשומות">
+                    <span class="material-symbols-outlined">description</span>
+                </a>
+                <a class="nav-link w-1/3 text-primary" href="test_history.html" title="היסטוריית מבחנים">
+                    <span class="material-symbols-outlined filled">checklist_rtl</span>
+                </a>
+                <a class="nav-link w-1/3" href="settings.html" title="הגדרות">
+                    <span class="material-symbols-outlined">settings</span>
+                </a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const resultsContainer = document.getElementById('results-container');
+            let testResults = JSON.parse(localStorage.getItem('depressionTestResults')) || [];
+
+            if (testResults.length === 0) {
+                resultsContainer.innerHTML = `<p class="text-center text-slate-500 dark:text-slate-400 py-10">לא נמצאו תוצאות מבחנים.</p>`;
+                return;
+            }
+
+            function getLevelColor(level) {
+                if (level === 'ללא דיכאון') return '#28a745';
+                if (level === 'דיכאון קל') return '#ffc107';
+                if (level === 'דיכאון בינוני') return '#fd7e14';
+                if (level === 'דיכאון חמור') return '#dc3545';
+                if (level === 'דיכאון חמור ביותר') return '#8B0000';
+                return 'var(--text-light)';
+            }
+
+            function renderResults() {
+                resultsContainer.innerHTML = '';
+                if (testResults.length === 0) {
+                    resultsContainer.innerHTML = `<p class="text-center text-slate-500 dark:text-slate-400 py-10">לא נמצאו תוצאות מבחנים.</p>`;
+                    return;
+                }
+
+                testResults.forEach(result => {
+                    const resultWrapper = document.createElement('div');
+                    resultWrapper.className = 'swipe-container';
+                    resultWrapper.dataset.id = result.createdAt;
+
+                    const color = getLevelColor(result.level);
+
+                    resultWrapper.innerHTML = `
+                        <div class="swipe-background">
+                            <span class="material-symbols-outlined">archive</span>
+                            <span class="material-symbols-outlined">archive</span>
+                        </div>
+                        <div class="swipe-item" data-id="${result.createdAt}">
+                            <a href="test_details.html?id=${result.createdAt}" class="test-result-card" style="display: block; text-decoration: none; color: inherit;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="test-result-score" style="color: ${color};">${result.score}</div>
+                                    <div class="test-result-details">
+                                        <p class="test-result-level">${result.level}</p>
+                                        <p class="test-result-date">${formatDateTime(result.createdAt)}</p>
+                                    </div>
+                                </div>
+                            </a>
+                             <div style="padding: 0.5rem 1rem; background-color: var(--background-light); border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end;">
+                                <button title="העבר לארכיון" class="archive-btn icon-btn" data-id="${result.createdAt}">
+                                    <span class="material-symbols-outlined text-base pointer-events-none">archive</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    resultsContainer.appendChild(resultWrapper);
+                });
+            }
+
+            function archiveTestResult(testId) {
+                if (!testId) return;
+                const index = testResults.findIndex(test => test.createdAt === testId);
+                if (index > -1) {
+                    const [archivedTest] = testResults.splice(index, 1);
+                    let archivedTestResults = JSON.parse(localStorage.getItem('archivedTestResults')) || [];
+                    archivedTestResults.unshift(archivedTest);
+                    localStorage.setItem('archivedTestResults', JSON.stringify(archivedTestResults));
+                }
+                localStorage.setItem('depressionTestResults', JSON.stringify(testResults));
+                renderResults();
+            }
+
+            resultsContainer.addEventListener('click', (e) => {
+                const archiveButton = e.target.closest('.archive-btn');
+                if (archiveButton) {
+                    archiveTestResult(archiveButton.dataset.id);
+                }
+            });
+
+            // --- Swipe to Archive Logic ---
+            let touchStartX = 0;
+            let touchCurrentX = 0;
+            let swipedElement = null;
+            let isSwiping = false;
+
+            resultsContainer.addEventListener('touchstart', (e) => {
+                const target = e.target.closest('.swipe-item');
+                if (target) {
+                    swipedElement = target;
+                    touchStartX = e.touches[0].clientX;
+                    swipedElement.style.transition = 'none';
+                }
+            }, { passive: true });
+
+            resultsContainer.addEventListener('touchmove', (e) => {
+                if (!swipedElement) return;
+                touchCurrentX = e.touches[0].clientX;
+                const diffX = touchCurrentX - touchStartX;
+                if (Math.abs(diffX) > 10) isSwiping = true;
+                if (isSwiping && diffX < 0) {
+                    swipedElement.style.transform = `translateX(${diffX}px)`;
+                }
+            }, { passive: true });
+
+            resultsContainer.addEventListener('touchend', (e) => {
+                if (!swipedElement || !isSwiping) {
+                    resetSwipeState();
+                    return;
+                }
+                const diffX = touchCurrentX - touchStartX;
+                const threshold = -swipedElement.offsetWidth * 0.4;
+                swipedElement.style.transition = 'transform 0.3s ease-out';
+                if (diffX < threshold) {
+                    swipedElement.style.transform = 'translateX(-100%)';
+                    const testId = swipedElement.dataset.id;
+                    setTimeout(() => archiveTestResult(testId), 250);
+                } else {
+                    swipedElement.style.transform = 'translateX(0)';
+                }
+                resetSwipeState();
+            });
+
+            function resetSwipeState() {
+                swipedElement = null;
+                isSwiping = false;
+                touchStartX = 0;
+                touchCurrentX = 0;
+            }
+
+            // Initial render
+            renderResults();
+        });
+
+        function formatDateTime(isoString) {
+            if (!isoString) return '';
+            const date = new Date(isoString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day}.${month}.${year} ${hours}:${minutes}`;
+        }
+
+        // Basic dark mode persistence
+        if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</body>
+
+</html>

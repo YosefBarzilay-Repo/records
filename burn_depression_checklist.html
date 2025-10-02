@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>שאלון הדיכאון של ברנס</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <style>
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-action-placeholder">
+                    <a href="#" id="back-btn" class="icon-btn">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </div>
+                <h1 class="header-title">שאלון הדיכאון של ברנס</h1>
+                <div class="header-action-placeholder"></div>
+            </div>
+        </header>
+
+        <main>
+            <div class="content-wrapper">
+                <div id="quiz-container" class="space-y-6">
+                    <div class="progress-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <div id="progress-text" class="progress-text"></div>
+
+                    <div id="question-area">
+                        <!-- Question will be injected here -->
+                    </div>
+
+                    <div class="quiz-navigation">
+                        <button id="prev-btn" class="btn btn-secondary">הקודם</button>
+                        <button id="submit-btn" class="btn btn-primary" style="display: none;">סיום</button>
+                    </div>
+                </div>
+
+                <div id="result" class="checklist-result">
+                    <div id="result-content">
+                        <!-- Result will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <nav class="footer-nav">
+                <a class="nav-link w-1/3" href="index.html" title="רשומות">
+                    <span class="material-symbols-outlined">description</span>
+                </a>
+                <a class="nav-link w-1/3 text-primary" href="test_history.html" title="היסטוריית מבחנים">
+                    <span class="material-symbols-outlined filled">checklist_rtl</span>
+                </a>
+                <a class="nav-link w-1/3" href="settings.html" title="הגדרות">
+                    <span class="material-symbols-outlined">settings</span>
+                </a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        // Go back to the previous page
+        document.getElementById('back-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.history.back();
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizContainer = document.getElementById('quiz-container');
+            const resultContainer = document.getElementById('result');
+            const resultContent = document.getElementById('result-content');
+            const questionArea = document.getElementById('question-area');
+            const prevBtn = document.getElementById('prev-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+
+            const questions = [
+                { text: 'תחושת עצב או דכדוך' },
+                { text: 'תחושת אומללות או מועקה' },
+                { text: 'התקפי בכי או נטייה לבכי' },
+                { text: 'תחושת ייאוש' },
+                { text: 'תחושת חוסר תקווה' },
+                { text: 'הערכה עצמית נמוכה' },
+                { text: 'תחושת חוסר ערך או חוסר התאמה' },
+                { text: 'אשמה או בושה' },
+                { text: 'ביקורת עצמית או האשמה עצמית' },
+                { text: 'קושי בקבלת החלטות' },
+                { text: 'אובדן עניין במשפחה, חברים או עמיתים' },
+                { text: 'בדידות' },
+                { text: 'בילוי פחות זמן עם משפחה או חברים' },
+                { text: 'אובדן מוטיבציה' },
+                { text: 'אובדן עניין בעבודה או בפעילויות אחרות' },
+                { text: 'הימנעות מעבודה או מפעילויות אחרות' },
+                { text: 'תחושת עייפות' },
+                { text: 'קשיי שינה או שינה מרובה מדי' },
+                { text: 'תיאבון ירוד או מוגבר' },
+                { text: 'אובדן עניין במין' },
+                { text: 'דאגה לבריאות' },
+                { text: 'האם יש לך מחשבות על התאבדות?' },
+                { text: 'האם תרצה/י לשים קץ לחייך?' },
+                { text: 'האם יש לך תוכנית כיצד לפגוע בעצמך?' },
+                { text: 'האם יש לך כוונה לבצע את תוכניתך?' }
+            ];
+
+            const answers = new Array(questions.length).fill(null);
+            let currentQuestionIndex = 0;
+
+            function renderQuestion(index) {
+                const question = questions[index];
+                const questionName = `q${index}`;
+                const optionsConfig = [
+                    { value: 0, text: 'כלל לא' },
+                    { value: 1, text: 'במידה מועטה' },
+                    { value: 2, text: 'במידה בינונית' },
+                    { value: 3, text: 'הרבה' },
+                    { value: 4, text: 'במידה רבה מאוד' }
+                ];
+
+                let optionsHtml = '';
+                optionsConfig.forEach(opt => {
+                    const isChecked = answers[index] === opt.value;
+                    optionsHtml += `
+                        <div class="checklist-option">
+                            <input type="radio" name="${questionName}" value="${opt.value}" id="${questionName}-${opt.value}" ${isChecked ? 'checked' : ''}>
+                            <label for="${questionName}-${opt.value}">${opt.text}</label>
+                        </div>
+                    `;
+                });
+
+                questionArea.innerHTML = `
+                    <div class="checklist-question active">
+                        <div class="checklist-question-text">
+                            <span class="checklist-question-number">${index + 1}.</span> ${question.text}
+                        </div>
+                        <div class="checklist-options">${optionsHtml}</div>
+                    </div>
+                `;
+
+                updateProgress();
+                updateNavButtons();
+            }
+
+            function updateProgress() {
+                const answeredCount = answers.filter(a => a !== null).length;
+                const progress = (answeredCount / questions.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `שאלה ${currentQuestionIndex + 1} מתוך ${questions.length}`;
+            }
+
+            function updateNavButtons() {
+                prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-flex' : 'none';
+                const allAnswered = answers.every(a => a !== null);
+                submitBtn.style.display = allAnswered ? 'inline-flex' : 'none';
+            }
+
+            questionArea.addEventListener('change', (e) => {
+                if (e.target.type === 'radio') {
+                    answers[currentQuestionIndex] = parseInt(e.target.value, 10);
+                    updateNavButtons(); // Check if submit button should appear
+                    
+                    // Auto-advance
+                    setTimeout(() => {
+                        if (currentQuestionIndex < questions.length - 1) {
+                            currentQuestionIndex++;
+                            renderQuestion(currentQuestionIndex);
+                        }
+                    }, 200); // Short delay to show selection
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    renderQuestion(currentQuestionIndex);
+                }
+            });
+
+            submitBtn.addEventListener('click', () => {
+                const allAnswered = answers.every(a => a !== null);
+                if (!allAnswered) {
+                    alert('יש לענות על כל השאלות לפני שניתן לחשב את התוצאה.');
+                    return;
+                }
+
+                const totalScore = answers.reduce((sum, val) => sum + val, 0);
+                const level = getDepressionLevel(totalScore);
+
+                displayResult(totalScore, level);
+                saveResult(totalScore, level, answers);
+
+                quizContainer.style.display = 'none';
+                resultContainer.style.display = 'block';
+                window.scrollTo(0, 0);
+            });
+
+            function getDepressionLevel(score) {
+                if (score <= 4) return { text: 'ללא דיכאון', color: '#28a745' };
+                if (score <= 10) return { text: 'דיכאון קל', color: '#ffc107' };
+                if (score <= 25) return { text: 'דיכאון בינוני', color: '#fd7e14' };
+                if (score <= 50) return { text: 'דיכאון חמור', color: '#dc3545' };
+                if (score <= 100) return { text: 'דיכאון חמור ביותר', color: '#8B0000' };
+                return { text: 'לא ידוע', color: '#6c757d' };
+            }
+
+            function displayResult(score, level) {
+                resultContent.innerHTML = `
+                    <div class="checklist-result-score" style="color: ${level.color};">${score}</div>
+                    <div class="checklist-result-level" style="color: ${level.color};">${level.text}</div>
+                    <p class="checklist-result-interpretation">
+                        הציון שלך מבוסס על שאלון ההערכה העצמית של ברנס.
+                    </p>
+                `;
+            }
+
+            function saveResult(score, level, answers) {
+                const newResult = { score, level: level.text, createdAt: new Date().toISOString(), answers: answers };
+                let results = JSON.parse(localStorage.getItem('depressionTestResults')) || [];
+                results.unshift(newResult);
+                localStorage.setItem('depressionTestResults', JSON.stringify(results));
+            }
+
+            // Initial render
+            renderQuestion(currentQuestionIndex);
+        });
+
+        // Basic dark mode persistence
+        if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</body>
+
+</html>

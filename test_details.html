@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>פרטי מבחן</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <style>
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+        }
+        .dark .detail-item {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-dark);
+        }
+        .detail-item-text {
+            flex-grow: 1;
+        }
+        .detail-item-answer {
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-action-placeholder">
+                    <a href="test_history.html" class="icon-btn">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </div>
+                <h1 id="page-title" class="header-title">פרטי מבחן</h1>
+                <div class="header-action-placeholder"></div>
+            </div>
+        </header>
+
+        <main>
+            <div id="details-container" class="content-wrapper space-y-2">
+                <!-- Details will be injected here -->
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <nav class="footer-nav">
+                <a class="nav-link w-1/3" href="index.html" title="רשומות">
+                    <span class="material-symbols-outlined">description</span>
+                </a>
+                <a class="nav-link w-1/3 text-primary" href="test_history.html" title="היסטוריית מבחנים">
+                    <span class="material-symbols-outlined filled">checklist_rtl</span>
+                </a>
+                <a class="nav-link w-1/3" href="settings.html" title="הגדרות">
+                    <span class="material-symbols-outlined">settings</span>
+                </a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const detailsContainer = document.getElementById('details-container');
+            const pageTitle = document.getElementById('page-title');
+            const urlParams = new URLSearchParams(window.location.search);
+            const testId = urlParams.get('id');
+
+            const allTests = JSON.parse(localStorage.getItem('depressionTestResults')) || [];
+            const testResult = allTests.find(test => test.createdAt === testId);
+
+            if (!testResult) {
+                detailsContainer.innerHTML = `<p class="text-center text-slate-500 dark:text-slate-400 py-10">תוצאת המבחן לא נמצאה.</p>`;
+                return;
+            }
+            
+            pageTitle.textContent = `מבחן מתאריך ${new Date(testResult.createdAt).toLocaleDateString('he-IL')}`;
+
+            const questions = [
+                'תחושת עצב או דכדוך', 'תחושת אומללות או מועקה', 'התקפי בכי או נטייה לבכי', 'תחושת ייאוש', 'תחושת חוסר תקווה', 'הערכה עצמית נמוכה', 'תחושת חוסר ערך או חוסר התאמה', 'אשמה או בושה', 'ביקורת עצמית או האשמה עצמית', 'קושי בקבלת החלטות', 'אובדן עניין במשפחה, חברים או עמיתים', 'בדידות', 'בילוי פחות זמן עם משפחה או חברים', 'אובדן מוטיבציה', 'אובדן עניין בעבודה או בפעילויות אחרות', 'הימנעות מעבודה או מפעילויות אחרות', 'תחושת עייפות', 'קשיי שינה או שינה מרובה מדי', 'תיאבון ירוד או מוגבר', 'אובדן עניין במין', 'דאגה לבריאות', 'האם יש לך מחשבות על התאבדות?', 'האם תרצה/י לשים קץ לחייך?', 'האם יש לך תוכנית כיצד לפגוע בעצמך?', 'האם יש לך כוונה לבצע את תוכניתך?'
+            ];
+            const answerTexts = ['כלל לא', 'במידה מועטה', 'במידה בינונית', 'הרבה', 'במידה רבה מאוד'];
+            const answerColors = ['#28a745', '#a3d9a5', '#ffc107', '#fd7e14', '#dc3545'];
+
+            if (testResult.answers && testResult.answers.length === questions.length) {
+                questions.forEach((questionText, index) => {
+                    const answerValue = testResult.answers[index];
+                    const detailItem = document.createElement('div');
+                    detailItem.className = 'detail-item';
+                    detailItem.innerHTML = `
+                        <p class="detail-item-text">${index + 1}. ${questionText}</p>
+                        <span class="detail-item-answer" style="background-color: ${answerColors[answerValue]}; color: ${answerValue > 1 ? 'white' : 'black'};">
+                            ${answerTexts[answerValue]}
+                        </span>
+                    `;
+                    detailsContainer.appendChild(detailItem);
+                });
+            } else {
+                 detailsContainer.innerHTML = `<p class="text-center text-slate-500 dark:text-slate-400 py-10">לא נשמרו תשובות מפורטות עבור מבחן זה.</p>`;
+            }
+        });
+
+        // Basic dark mode persistence
+        if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</body>
+
+</html>

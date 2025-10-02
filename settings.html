@@ -3,98 +3,82 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Feeling Good - הגדרות</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#13a4ec",
-                        "background-light": "#f6f7f8",
-                        "background-dark": "#101c22",
-                    },
-                    fontFamily: {
-                        "display": ["Heebo", "sans-serif"]
-                    },
-                    borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" },
-                },
-            },
-        }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings:
-            'FILL' 0,
-            'wght' 400,
-            'GRAD' 0,
-            'opsz' 24
-        }
-    </style>
+<link href="style.css" rel="stylesheet" />
 <style>
     .material-symbols-outlined.filled {
         font-variation-settings: 'FILL' 1;
     }
   </style>
   </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
-<div class="flex flex-col min-h-screen">
-<header class="sticky top-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm z-10">
-<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
-<div class="w-12">
-<a href="index.html" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400">
-<span class="material-symbols-outlined">arrow_forward</span>
-</a>
-</div>
-<h1 class="text-xl font-bold text-center text-slate-900 dark:text-white">הגדרות</h1>
-<div class="w-12 flex justify-start">
-</div>
-</div>
-</header>
-<main class="flex-grow p-4 pb-20">
-<div class="max-w-3xl mx-auto w-full space-y-4">
-<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-4">
-<h2 class="text-lg font-bold mb-2">ייצוא נתונים</h2>
-<p class="text-sm text-slate-600 dark:text-slate-400 mb-4">ייצא את כל רשומות המחשבה שלך לקובץ CSV, אותו תוכל לפתוח בתוכנות גיליון אלקטרוני כמו Excel.</p>
-<button id="export-csv-btn" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-full shadow-lg hover:bg-primary/90 transition-colors">
-<span class="material-symbols-outlined">download</span>
-<span>ייצוא הכל ל-CSV</span>
-</button>
-</div>
-<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-4">
-<h2 class="text-lg font-bold mb-4">רשומות בארכיון</h2>
-<div id="archive-container" class="space-y-4"></div>
-</div>
-</div>
-</main>
-<footer class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm z-10">
-<div class="flex justify-around p-2 border-t border-slate-200 dark:border-slate-800">
-<a class="flex flex-col items-center justify-center w-1/3 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" href="index.html" title="רשומות">
-<span class="material-symbols-outlined">description</span>
-</a>
-<a class="flex flex-col items-center justify-center w-1/3 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" href="new-record.html" title="רשומה חדשה">
-<span class="material-symbols-outlined">add_circle</span>
-</a>
-<a class="flex flex-col items-center justify-center w-1/3 text-primary" href="settings.html" title="הגדרות">
-<span class="material-symbols-outlined filled">settings</span>
-</a>
-</div>
-</footer>
-<!-- Custom Modal -->
-<div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-<div class="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 w-full max-w-sm text-center">
-<h3 id="custom-modal-title" class="text-lg font-bold mb-2"></h3>
-<p id="custom-modal-message" class="text-sm text-slate-600 dark:text-slate-400 mb-6"></p>
-<div id="custom-modal-buttons" class="flex gap-4 justify-center">
-<!-- Buttons are injected here -->
-</div>
-</div>
-</div>
-</div>
+<body>
+    <div class="main-container">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-action-placeholder">
+                    <a href="index.html" class="icon-btn">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </div>
+                <h1 class="header-title">הגדרות</h1>
+                <div class="header-action-placeholder"></div>
+            </div>
+        </header>
+        <main>
+            <div class="content-wrapper space-y-4">
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-2">ייצוא נתונים</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">ייצא את כל רשומות המחשבה שלך לקובץ CSV.</p>
+                    <button id="export-csv-btn" class="btn btn-primary btn-full">
+                        <span class="material-symbols-outlined">download</span>
+                        <span>ייצוא הכל ל-CSV</span>
+                    </button>
+                </div>
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-2">ייצוא תוצאות מבחנים</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">ייצא את כל תוצאות מבחני הדיכאון שלך לקובץ CSV.</p>
+                    <button id="export-tests-csv-btn" class="btn btn-primary btn-full">
+                        <span class="material-symbols-outlined">download</span>
+                        <span>ייצוא תוצאות מבחנים</span>
+                    </button>
+                </div>
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-4">רשומות בארכיון</h2>
+                    <div id="archive-container" class="space-y-4"></div>
+                </div>
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-4">מבחנים בארכיון</h2>
+                    <div id="archived-tests-container" class="space-y-4"></div>
+                </div>
+            </div>
+        </main>
+        <footer class="app-footer">
+            <nav class="footer-nav">
+                <a class="nav-link w-1/3" href="index.html" title="רשומות">
+                    <span class="material-symbols-outlined">description</span>
+                </a>
+                <a class="nav-link w-1/3" href="test_history.html" title="היסטוריית מבחנים">
+                    <span class="material-symbols-outlined">checklist_rtl</span>
+                </a>
+                <a class="nav-link w-1/3 active" href="settings.html" title="הגדרות">
+                    <span class="material-symbols-outlined filled">settings</span>
+                </a>
+            </nav>
+        </footer>
+        <!-- Custom Modal -->
+        <div id="custom-modal" class="modal-backdrop">
+            <div class="modal-content" style="text-align: center;">
+                <h3 id="custom-modal-title" class="modal-title"></h3>
+                <p id="custom-modal-message" class="modal-body"></p>
+                <div id="custom-modal-buttons" class="modal-footer">
+                    <!-- Buttons are injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
 <script>
     // --- Suppress Tailwind CDN production warning ---
     const originalWarn = console.warn;
@@ -108,7 +92,9 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const exportBtn = document.getElementById('export-csv-btn');
+        const exportTestsBtn = document.getElementById('export-tests-csv-btn');
         const archiveContainer = document.getElementById('archive-container');
+        const archivedTestsContainer = document.getElementById('archived-tests-container');
         const customModal = document.getElementById('custom-modal');
         const customModalTitle = document.getElementById('custom-modal-title');
         const customModalMessage = document.getElementById('custom-modal-message');
@@ -169,6 +155,45 @@
             document.body.removeChild(link);
         }
 
+        function exportTestsToCsv() {
+            const testResults = JSON.parse(localStorage.getItem('depressionTestResults')) || [];
+            if (testResults.length === 0) {
+                showCustomAlert('אין תוצאות מבחנים לייצוא', 'ייצוא נתונים');
+                return;
+            }
+
+            const questionHeaders = Array.from({ length: 25 }, (_, i) => `שאלה ${i + 1}`);
+            const headers = ['תאריך', 'ציון', 'רמה', ...questionHeaders];
+
+            const rows = testResults.map(result => {
+                const baseData = [
+                    new Date(result.createdAt).toLocaleString('he-IL'),
+                    result.score,
+                    result.level
+                ];
+                const answerData = result.answers ? result.answers : new Array(25).fill('');
+                return [...baseData, ...answerData].map(escapeCsvCell);
+            });
+
+            let csvContent = headers.join(',') + '\n';
+            rows.forEach(rowArray => {
+                csvContent += rowArray.join(',') + '\n';
+            });
+
+            // BOM for Excel to recognize UTF-8
+            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            const date = new Date().toISOString().slice(0, 10);
+            link.setAttribute("download", `depression_test_results_${date}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         function renderArchivedRecords() {
             let archivedRecords = JSON.parse(localStorage.getItem('archivedRecords')) || [];
             archiveContainer.innerHTML = '';
@@ -180,18 +205,18 @@
 
             archivedRecords.forEach(record => {
                 const recordElement = document.createElement('div');
-                recordElement.className = 'archived-item bg-slate-100 dark:bg-slate-800 rounded-lg p-3 flex items-center justify-between gap-2';
+                recordElement.className = 'archived-item';
                 recordElement.dataset.id = record.id;
                 recordElement.innerHTML = `
-                    <div class="flex-grow overflow-hidden">
-                        <p class="text-sm font-bold truncate">${record.thought}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">${new Date(record.createdAt).toLocaleDateString('he-IL')}</p>
+                    <div class="archived-item-text">
+                        <p class="archived-item-title">${record.thought}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" style="font-size: 0.75rem;">${new Date(record.createdAt).toLocaleDateString('he-IL')}</p>
                     </div>
-                    <div class="flex-shrink-0 flex gap-1">
-                        <button title="שחזר" class="restore-btn p-2 rounded-full hover:bg-green-100 dark:hover:bg-green-900 text-green-600 dark:text-green-400">
+                    <div class="archived-item-actions">
+                        <button title="שחזר" class="restore-btn icon-btn" style="color: #16a34a;">
                             <span class="material-symbols-outlined text-base pointer-events-none">unarchive</span>
                         </button>
-                        <button title="מחק לצמיתות" class="perm-delete-btn p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400">
+                        <button title="מחק לצמיתות" class="perm-delete-btn icon-btn" style="color: #dc2626;">
                             <span class="material-symbols-outlined text-base pointer-events-none">delete_forever</span>
                         </button>
                     </div>
@@ -199,6 +224,67 @@
                 archiveContainer.appendChild(recordElement);
             });
         }
+
+        function renderArchivedTests() {
+            let archivedTests = JSON.parse(localStorage.getItem('archivedTestResults')) || [];
+            archivedTestsContainer.innerHTML = '';
+
+            if (archivedTests.length === 0) {
+                archivedTestsContainer.innerHTML = `<p class="text-sm text-slate-500 dark:text-slate-400 text-center">ארכיון המבחנים ריק.</p>`;
+                return;
+            }
+
+            archivedTests.forEach(test => {
+                const testElement = document.createElement('div');
+                testElement.className = 'archived-item';
+                testElement.dataset.id = test.createdAt;
+                testElement.innerHTML = `
+                    <div class="archived-item-text">
+                        <p class="archived-item-title">ציון: ${test.score} - ${test.level}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" style="font-size: 0.75rem;">${new Date(test.createdAt).toLocaleDateString('he-IL')}</p>
+                    </div>
+                    <div class="archived-item-actions">
+                        <button title="שחזר" class="restore-test-btn icon-btn" style="color: #16a34a;">
+                            <span class="material-symbols-outlined text-base pointer-events-none">unarchive</span>
+                        </button>
+                        <button title="מחק לצמיתות" class="perm-delete-test-btn icon-btn" style="color: #dc2626;">
+                            <span class="material-symbols-outlined text-base pointer-events-none">delete_forever</span>
+                        </button>
+                    </div>
+                `;
+                archivedTestsContainer.appendChild(testElement);
+            });
+        }
+
+        archivedTestsContainer.addEventListener('click', async (e) => {
+            let archivedTests = JSON.parse(localStorage.getItem('archivedTestResults')) || [];
+            const testId = e.target.closest('.archived-item')?.dataset.id;
+            if (!testId) return;
+
+            const index = archivedTests.findIndex(t => t.createdAt === testId);
+            if (index === -1) return;
+
+            // Restore button
+            if (e.target.closest('.restore-test-btn')) {
+                const [test] = archivedTests.splice(index, 1);
+                let testResults = JSON.parse(localStorage.getItem('depressionTestResults')) || [];
+                testResults.unshift(test);
+                localStorage.setItem('depressionTestResults', JSON.stringify(testResults));
+                localStorage.setItem('archivedTestResults', JSON.stringify(archivedTests));
+                renderArchivedTests();
+                return;
+            }
+
+            // Permanent delete button
+            if (e.target.closest('.perm-delete-test-btn')) {
+                const confirmed = await showCustomConfirm('פעולה זו תמחק את תוצאת המבחן לצמיתות. האם אתה בטוח?', 'אישור מחיקה');
+                if (confirmed) {
+                    archivedTests.splice(index, 1);
+                    localStorage.setItem('archivedTestResults', JSON.stringify(archivedTests));
+                    renderArchivedTests();
+                }
+            }
+        });
 
         archiveContainer.addEventListener('click', async (e) => {
             let archivedRecords = JSON.parse(localStorage.getItem('archivedRecords')) || [];
@@ -243,10 +329,10 @@
         function showCustomAlert(message, title = 'התראה') {
             customModalTitle.textContent = title;
             customModalMessage.textContent = message;
-            customModalButtons.innerHTML = `
-                <button id="modal-ok-btn" class="w-full max-w-[120px] inline-flex items-center justify-center px-4 py-2 bg-primary text-white font-bold rounded-full shadow-lg hover:bg-primary/90 transition-colors">אישור</button>
-            `;
-            document.getElementById('modal-ok-btn').addEventListener('click', () => showCustomModal(false));
+            customModalButtons.innerHTML = `<button id="modal-ok-btn" class="btn btn-primary" style="width: 120px;">אישור</button>`;
+            document.getElementById('modal-ok-btn').addEventListener('click', () => {
+                showCustomModal(false);
+            });
             showCustomModal(true);
         }
 
@@ -254,8 +340,8 @@
             customModalTitle.textContent = title;
             customModalMessage.textContent = message;
             customModalButtons.innerHTML = `
-                <button id="modal-cancel-btn" class="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">ביטול</button>
-                <button id="modal-confirm-btn" class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 transition-colors">מחק</button>
+               <button id="modal-cancel-btn" class="btn btn-secondary btn-full">ביטול</button>
+                <button id="modal-confirm-btn" class="btn btn-danger btn-full">מחק</button>
             `;
             showCustomModal(true);
 
@@ -275,7 +361,9 @@
         }
 
         exportBtn.addEventListener('click', exportToCsv);
+        exportTestsBtn.addEventListener('click', exportTestsToCsv);
         renderArchivedRecords();
+        renderArchivedTests();
     });
 
     // Basic dark mode persistence
