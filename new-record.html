@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Feeling Good - רשומה חדשה</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <!-- Slim Select CSS -->
+    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Heebo", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
+    <style>
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        /* Slim-select dark mode styles */
+        .dark .ss-main {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
+        .dark .ss-multi-selected {
+            border-color: #334155;
+        }
+
+        .dark .ss-content {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+
+        .dark .ss-search input {
+            color: #cbd5e1;
+        }
+
+        .dark .ss-option:hover,
+        .dark .ss-option.ss-highlighted {
+            background-color: #334155;
+            color: white;
+        }
+
+        .dark .ss-multi-selected .ss-value {
+            background-color: #334155;
+            /* slate-700 */
+            color: #e2e8f0;
+            /* slate-200 */
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+    <div class="flex flex-col min-h-screen">
+        <header class="sticky top-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm z-10">
+            <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+                <div class="w-12">
+                    <a href="index.html"
+                        class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </div>
+                <h1 class="text-xl font-bold text-center text-slate-900 dark:text-white">רשומה חדשה</h1>
+                <div class="w-12 flex justify-start">
+                </div>
+            </div>
+        </header>
+        <main class="flex-grow p-4 pb-20">
+            <div class="max-w-3xl mx-auto w-full">
+                <form id="new-record-form" class="space-y-6" novalidate>
+                    <div>
+                        <label for="automatic-thought"
+                            class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">מחשבה
+                            אוטומטית</label>
+                        <textarea id="automatic-thought" name="automatic-thought" rows="3"
+                            class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"></textarea>
+                    </div>
+                    <div>
+                        <label for="cognitive-distortion"
+                            class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">העיוות
+                            ההכרני</label>
+                        <select id="cognitive-distortion" multiple>
+                            <option>הכל או לא כלום</option>
+                            <option>הכללה מוגזמת</option>
+                            <option>פילטר שכלי</option>
+                            <option>פסילת החיובי</option>
+                            <option>מסקנות מוטעות - קריאת מחשבות</option>
+                            <option>מסקנות מוטעות - ניבוי העתיד</option>
+                            <option>העצמה ומזעור</option>
+                            <option>חשיבה רגשית</option>
+                            <option>צריך ואסור</option>
+                            <option>הצמדת תוויות</option>
+                            <option>העברה לפסים אישיים</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="logical-response"
+                            class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">תגובה
+                            הגיונית</label>
+                        <textarea id="logical-response" name="logical-response" rows="5"
+                            class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"></textarea>
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit"
+                            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-full shadow-lg hover:bg-primary/90 transition-colors">
+                            <span id="save-icon" class="material-symbols-outlined">save</span>
+                            <span>שמירת רשומה</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <footer
+            class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm z-10">
+            <div class="flex justify-around p-2 border-t border-slate-200 dark:border-slate-800">
+                <a class="flex flex-col items-center justify-center w-1/3 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
+                    href="index.html" title="רשומות">
+                    <span class="material-symbols-outlined">description</span>
+                </a>
+                <a class="flex flex-col items-center justify-center w-1/3 text-primary" href="new-record.html" title="רשומה חדשה">
+                    <span class="material-symbols-outlined filled">add_circle</span>
+                </a>
+                <a class="flex flex-col items-center justify-center w-1/3 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
+                    href="settings.html" title="הגדרות">
+                    <span class="material-symbols-outlined">settings</span>
+                </a>
+            </div>
+        </footer>
+    </div>
+    <!-- Slim Select JS -->
+    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+    <script>
+        // --- Suppress Tailwind CDN production warning ---
+        const originalWarn = console.warn;
+        console.warn = function (message) {
+            if (message.includes('cdn.tailwindcss.com should not be used in production')) {
+                return;
+            }
+            originalWarn.apply(console, arguments);
+        };
+        // ---------------------------------------------
+
+        // Basic dark mode persistence MUST run before DOMContentLoaded
+        if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('new-record-form');
+            const pageTitle = document.querySelector('h1');
+            const submitButtonText = form.querySelector('button[type="submit"] span:not(.material-symbols-outlined)');
+            const thoughtInput = document.getElementById('automatic-thought');
+            const responseInput = document.getElementById('logical-response');
+
+            const distortionSelect = new SlimSelect({
+                select: '#cognitive-distortion',
+                settings: {
+                    placeholderText: 'בחר עיוותים הכרניים',
+                    searchText: 'לא נמצאו תוצאות',
+                    closeOnSelect: false,
+                    showSearch: false,
+                }
+            });
+
+            // Set the data for the dropdown on initial load for new records as well.
+            const allDistortions = Array.from(document.querySelectorAll('#cognitive-distortion option')).map(opt => ({ text: opt.value }));
+            distortionSelect.setData(allDistortions);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const editRecordId = urlParams.get('id');
+            let records = JSON.parse(localStorage.getItem('thoughtRecords')) || [];
+
+            if (editRecordId) {
+                const recordToEdit = records.find(record => record.id.toString() === editRecordId);
+                if (recordToEdit) {
+                    pageTitle.textContent = 'עריכת רשומה';
+                    submitButtonText.textContent = 'שמירת שינויים';
+
+                    thoughtInput.value = recordToEdit.thought;
+                    responseInput.value = recordToEdit.response;
+
+                    // When editing, we must first set the full data set, then set the selected values.
+                    const distortions = Array.isArray(recordToEdit.distortion) ? recordToEdit.distortion : [];
+                    distortionSelect.setSelected(distortions);
+                }
+            }
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const thought = thoughtInput.value;
+                const distortion = distortionSelect.getSelected(); // Get array of selected string values
+                const response = responseInput.value;
+
+                if (editRecordId) {
+                    // Update existing record
+                    const recordIndex = records.findIndex(record => record.id.toString() === editRecordId);
+                    if (recordIndex > -1) {
+                        records[recordIndex].thought = thought;
+                        records[recordIndex].distortion = distortion;
+                        records[recordIndex].response = response;
+                    }
+                } else {
+                    // Create new record
+                    const newRecord = {
+                        id: Date.now(),
+                        thought: thought,
+                        distortion: distortion,
+                        response: response,
+                        createdAt: new Date().toISOString()
+                    };
+                    records.unshift(newRecord); // Add new record to the beginning
+                }
+
+                localStorage.setItem('thoughtRecords', JSON.stringify(records));
+                window.location.assign('index.html');
+            });
+        });
+    </script>
+</body>
+
+</html>

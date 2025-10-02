@@ -1,0 +1,372 @@
+<link rel="manifest" href="manifest.json">
+<!DOCTYPE html>
+<html dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Feeling Good - רשומות</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("Service Worker registered"))
+    .catch(err => console.error("SW registration failed:", err));
+}
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Heebo", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<style>
+    .material-symbols-outlined.filled {
+        font-variation-settings: 'FILL' 1;
+    }
+    .details-content {
+        transition: all 0.3s ease-in-out;
+        max-height: 0;
+    }
+    .details-content.expanded {
+        max-height: 500px; /* Adjust as needed */
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm z-10">
+<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+<div class="w-12">
+<button id="filter-btn" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<h1 class="text-xl font-bold text-center text-slate-900 dark:text-white">רשומות</h1>
+<div class="w-12 flex justify-start">
+</div>
+</div>
+</header>
+<main class="flex-grow p-4 pb-20">
+<div class="max-w-3xl mx-auto w-full space-y-4">
+<div id="records-container" class="space-y-4"></div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm z-10">
+<div class="flex justify-around p-2 border-t border-slate-200 dark:border-slate-800">
+<a class="flex flex-col items-center justify-center w-1/3 text-primary" href="index.html">
+<span class="material-symbols-outlined filled">description</span>
+</a>
+<a class="flex flex-col items-center justify-center w-1/3 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" href="new-record.html" id="new-record-link">
+<span class="material-symbols-outlined">add_circle</span>
+</a>
+<a class="flex flex-col items-center justify-center w-1/3 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" href="settings.html">
+<span class="material-symbols-outlined">settings</span>
+</a>
+</div>
+</footer>
+<!-- Filter Modal -->
+<div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 w-full max-w-sm">
+<h3 class="text-lg font-bold text-center mb-4">סינון לפי תאריך</h3>
+<div class="space-y-4">
+<div>
+<label for="start-date" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">מתאריך</label>
+<input type="date" id="start-date" name="start-date" class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"/>
+</div>
+<div>
+<label for="end-date" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">עד תאריך</label>
+<input type="date" id="end-date" name="end-date" class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"/>
+</div>
+</div>
+<div class="mt-6 flex gap-4">
+<button id="clear-filter-btn" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+<span>נקה</span>
+</button>
+<button id="apply-filter-btn" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white font-bold rounded-full shadow-lg hover:bg-primary/90 transition-colors">
+<span>החל</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+    // --- Suppress Tailwind CDN production warning ---
+    const originalWarn = console.warn;
+    console.warn = function(message) {
+        if (message.includes('cdn.tailwindcss.com should not be used in production')) {
+            return;
+        }
+        originalWarn.apply(console, arguments);
+    };
+    // ---------------------------------------------
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const recordsContainer = document.getElementById('records-container');
+        const newRecordLink = document.getElementById('new-record-link');
+        const filterBtn = document.getElementById('filter-btn');
+        const filterModal = document.getElementById('filter-modal');
+        const applyFilterBtn = document.getElementById('apply-filter-btn');
+        const clearFilterBtn = document.getElementById('clear-filter-btn');
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        const allRecords = JSON.parse(localStorage.getItem('thoughtRecords')) || [];
+
+        function renderRecords(recordsToRender) {
+            recordsContainer.innerHTML = ''; // Clear existing records
+
+            if (recordsToRender.length === 0) {
+                const message = allRecords.length === 0 
+                    ? `<p class="text-slate-500 dark:text-slate-400">עדיין אין רשומות.</p><p class="text-slate-500 dark:text-slate-400">לחץ על "רשומה חדשה" כדי להתחיל.</p>`
+                    : `<p class="text-slate-500 dark:text-slate-400">לא נמצאו רשומות התואמות את הסינון.</p>`;
+                
+                recordsContainer.innerHTML = `<div class="text-center py-10 px-4">${message}</div>`;
+                
+                return;
+            }
+
+            recordsToRender.forEach(record => {
+                const recordWrapper = document.createElement('div');
+                recordWrapper.className = 'record-container relative bg-red-500/80 dark:bg-red-800/80 rounded-xl shadow-sm overflow-hidden';
+                recordWrapper.dataset.id = record.id;
+
+                recordWrapper.innerHTML = `
+                    <div class="absolute inset-y-0 left-0 flex items-center px-6 text-white">
+                        <span class="material-symbols-outlined">archive</span>
+                    </div>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-6 text-white">
+                        <span class="material-symbols-outlined">archive</span>
+                    </div>
+                    <div class="record-item relative bg-white dark:bg-slate-900 w-full transition-transform duration-300 ease-out" data-id="${record.id}">
+
+                    <!-- Card Content -->
+                    <div class="p-4 flex justify-between items-start gap-4">
+                        <div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">מחשבה אוטומטית</p>
+                            <p class="text-lg font-bold text-slate-900 dark:text-white mt-1">${escapeHTML(record.thought)}</p>
+                        </div>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap flex-shrink-0">
+                            ${formatDateTime(record.createdAt)}
+                        </p>
+                    </div>
+                    <div class="details-content overflow-hidden">
+                        <div class="px-4 pb-4 border-t border-slate-200 dark:border-slate-800 mt-4 pt-4">
+                            <p class="text-sm text-slate-500 dark:text-slate-400">העיוות ההכרני</p>
+                            <p class="text-slate-800 dark:text-slate-200 mt-1 whitespace-pre-wrap">${
+                                Array.isArray(record.distortion) && record.distortion.length > 0 
+                                ? escapeHTML(record.distortion.join(', ')) 
+                                : 'לא צוין'
+                            }</p>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <p class="text-sm text-slate-500 dark:text-slate-400">תגובה הגיונית</p>
+                            <p class="text-slate-800 dark:text-slate-200 mt-1 whitespace-pre-wrap">${escapeHTML(record.response) || 'לא צוין'}</p>
+                        </div>
+                    </div>
+                    <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex justify-start items-center space-x-2 space-x-reverse">
+                        <button class="show-details-btn flex items-center space-x-1 space-x-reverse text-primary text-sm font-medium px-3 py-1 rounded-full hover:bg-primary/10">
+                            <span>הצג פרטים</span>
+                            <span class="material-symbols-outlined transition-transform">expand_more</span>
+                        </button>
+                        <div class="flex-grow"></div>
+                        <button class="edit-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400" data-id="${record.id}">
+                            <span class="material-symbols-outlined text-base pointer-events-none">edit</span>
+                        </button>
+                        <button class="archive-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400" data-id="${record.id}">
+                            <span class="material-symbols-outlined text-base pointer-events-none">archive</span>
+                        </button>
+                    </div>
+                    </div>
+                `;
+                recordsContainer.appendChild(recordWrapper);
+            });
+        }
+
+        function applyFilters() {
+            const startDate = startDateInput.value ? new Date(startDateInput.value).setHours(0, 0, 0, 0) : null;
+            const endDate = endDateInput.value ? new Date(endDateInput.value).setHours(23, 59, 59, 999) : null;
+
+            const filteredRecords = allRecords.filter(record => {
+                const recordDate = new Date(record.createdAt);
+                if (startDate && recordDate < startDate) {
+                    return false;
+                }
+                if (endDate && recordDate > endDate) {
+                    return false;
+                }
+                return true;
+            });
+            renderRecords(filteredRecords);
+        }
+
+        function toggleModal(show) {
+            if (show) {
+                filterModal.classList.remove('hidden');
+                filterModal.classList.add('flex');
+            } else {
+                filterModal.classList.add('hidden');
+                filterModal.classList.remove('flex');
+            }
+        }
+
+        filterBtn.addEventListener('click', () => toggleModal(true));
+        filterModal.addEventListener('click', (e) => { if (e.target === filterModal) toggleModal(false); });
+        applyFilterBtn.addEventListener('click', () => { applyFilters(); toggleModal(false); });
+        clearFilterBtn.addEventListener('click', () => {
+            startDateInput.value = ''; endDateInput.value = ''; applyFilters(); toggleModal(false);
+        });
+
+        // Initial render
+        renderRecords(allRecords);
+
+        // --- Swipe to Archive Logic ---
+        let touchStartX = 0;
+        let touchCurrentX = 0;
+        let swipedElement = null;
+        let isSwiping = false;
+
+        recordsContainer.addEventListener('touchstart', (e) => {
+            const target = e.target.closest('.record-item');
+            if (target) {
+                swipedElement = target;
+                touchStartX = e.touches[0].clientX;
+                swipedElement.style.transition = 'none'; // Disable transition for smooth dragging
+            }
+        }, { passive: true });
+
+        recordsContainer.addEventListener('touchmove', (e) => {
+            if (!swipedElement) return;
+
+            touchCurrentX = e.touches[0].clientX;
+            const diffX = touchCurrentX - touchStartX;
+
+            // Start swiping only if horizontal movement is significant
+            if (Math.abs(diffX) > 10) {
+                isSwiping = true;
+            }
+
+            if (isSwiping && diffX < 0) { // Only allow left swipe
+                swipedElement.style.transform = `translateX(${diffX}px)`;
+            }
+        }, { passive: true });
+
+        recordsContainer.addEventListener('touchend', (e) => {
+            if (!swipedElement || !isSwiping) {
+                resetSwipeState();
+                return;
+            }
+
+            const diffX = touchCurrentX - touchStartX;
+            const threshold = -swipedElement.offsetWidth * 0.4; // 40% of the card width
+
+            swipedElement.style.transition = 'transform 0.3s ease-out';
+
+            if (diffX < threshold) {
+                // Archive the item
+                swipedElement.style.transform = 'translateX(-100%)';
+                const recordId = swipedElement.dataset.id;
+                setTimeout(() => {
+                    archiveRecord(recordId);
+                }, 250); // Wait for animation to finish
+            } else {
+                // Snap back
+                swipedElement.style.transform = 'translateX(0)';
+            }
+
+            resetSwipeState();
+        });
+
+        function resetSwipeState() {
+            swipedElement = null;
+            isSwiping = false;
+            touchStartX = 0;
+            touchCurrentX = 0;
+        }
+
+        function archiveRecord(recordId) {
+            if (!recordId) return;
+            const index = allRecords.findIndex(record => record.id.toString() === recordId);
+            if (index > -1) {
+                const [archivedRecord] = allRecords.splice(index, 1);
+                
+                let archivedRecords = JSON.parse(localStorage.getItem('archivedRecords')) || [];
+                archivedRecords.unshift(archivedRecord);
+                localStorage.setItem('archivedRecords', JSON.stringify(archivedRecords));
+            }
+            localStorage.setItem('thoughtRecords', JSON.stringify(allRecords));
+            applyFilters(); // Re-render the list
+        }
+
+        recordsContainer.addEventListener('click', (e) => {
+            const editButton = e.target.closest('.edit-btn');
+            if (editButton) {
+                const recordId = editButton.dataset.id;
+                window.location.href = `new-record.html?id=${recordId}`;
+                return;
+            }
+
+            const archiveButton = e.target.closest('.archive-btn');
+            if (archiveButton) {
+                archiveRecord(archiveButton.dataset.id);
+            }
+
+            const detailsButton = e.target.closest('.show-details-btn');
+            if (detailsButton) {
+                const card = detailsButton.closest('.record-item');
+                const content = card.querySelector('.details-content');
+                const icon = detailsButton.querySelector('.material-symbols-outlined');
+                const buttonText = detailsButton.querySelector('span:not(.material-symbols-outlined)');
+
+                content.classList.toggle('expanded');
+                const isExpanded = content.classList.contains('expanded');
+
+                icon.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+                buttonText.textContent = isExpanded ? 'הסתר פרטים' : 'הצג פרטים';
+            }
+        });
+    });
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        const p = document.createElement("p");
+        p.appendChild(document.createTextNode(str));
+        return p.innerHTML;
+    }
+
+    function formatDateTime(isoString) {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${day}.${month}.${year} ${hours}:${minutes}`;
+    }
+
+    // Basic dark mode persistence
+    if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    }
+</script></body></html>
